@@ -32,3 +32,38 @@ MiniLatex is written in [Elm](http://elm-lang.org/),
 a statically typed functional language. The code
 is available both on [GitHub](https://github.com/jxxcarlson/meenylatex)
 and at [package.elm-lang.org](https://package.elm-lang.org/packages/jxxcarlson/meenylatex/latest/)
+
+## Origin and Acknowledgements
+
+The MiniLatex project would never have succeeded without
+the generous help and advice of many people. At the Elm
+Europe 2017, I had a short conversation with Evan Czaplicki
+about parsing. At that time I was still working on an
+extension to Asciidoc which gives it LaTeX-like features,
+and I was thinking of writing a new Asciidoc parser.
+A realized not long after that I could do something
+that I had not dared dream of: write a parser for
+a subset of LaTeX. I wrote down a preliminary definition
+of the type of the abstract syntax tree (AST) and began
+working on the parser. This was the first time that
+I had worked with parser combinators. Fortunately, I was
+able to get many of my questions answered on the Elm Slack.
+I would particularly like to acknowledge Ilias van Peer, whose
+generous help was crucial.
+
+Another phase was the transition from version 0.18 to 0.19
+of the Elm compiler. This was important because performance
+optimizations in the compiler made possible another dream:
+real-time parsing and rendering of a subset of LaTeX.
+The transition required some substantial changes, and I was
+blocked on how to implement rendering. Evan
+Czaplicki suggested that I replace rendering
+to a string of HTML text by rendering to `Html msg`,
+Elm's native data type that represents HTML.
+This not only solved the problem, but also
+yielded a significant performance boost.
+
+The final rendering step (MathJax), has always been
+delicate/tricky, and it also required a substantial
+change. I am indebted to Luke Westby for
+an elegant solution to this problem.
