@@ -30,7 +30,7 @@ performance optimization.
 The stuctures `u = a x b`, `v = u y b` map directly
 onto the `DiffRecord` type:
 
-```elm
+```haskell
 type alias DiffRecord =
     { commonInitialSegment : List String
     , commonTerminalSegment : List String
@@ -50,7 +50,7 @@ is straightforward.
 ## Edit records
 
 The function `diff` carries out the transformation `a x b => a y b`.
-To effect `a' x' b' => a' y' b'`, one needs the notion of an
+To effect the transformation `a' x' b' => a' y' b'`, one needs the notion of an
 `EditRecord`, which carries the needed state:
 
 ```elm
