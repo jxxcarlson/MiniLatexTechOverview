@@ -58,11 +58,14 @@ succeed : a -> Parser a
 
 `Macro` in this context is a type constructor,
 so it will return a `Macro` value given the
-proper arguments. This is what the "parser pipeline"
-does. A parser pipeline is built out of the symbols
-`|=` and `|.`, where the first means "parse and keep the result,"
-and where the second means "parse and ignore the result."
+proper arguments.The "parser pipeline,"
+built out of the symbols
+`|=` and `|.` does just this: it sequences
+the action of a list of parsers, `macroName`,
+`itemList optionalArg`, etc. The symbol
+`|=` means "apply the parser on the right and keep the result."
+The symbol `|.` means "apply the parser on the right and ignore the result."
 In this case, the parser pipeline will "eat" the name of the macro,
 the list of optional arguments, and the list of regular arguments,
-passing these as arguments to `Macro`. The pipeline ignores
+passing these to `Macro`. The pipeline ignores
 any trailing whitespace.
