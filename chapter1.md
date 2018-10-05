@@ -166,9 +166,7 @@ Accumulator.parse latexState paragraphs =
 ```
 
 Parsing a paragraph generates a list of `LatexExpressions`,
-so applying `Accumulator.parse` produces a list of lists of  
-`LatexExpressions`, together with a `LatexState` that
-holds all the information needed to give sequentially
+so applying `Accumulator.parse` produces a list of lists of `LatexExpressions`, together with a `LatexState` that holds all the information needed to give sequentially
 numbered sections, resolve cross-references,
 
 A second accumulator takes the information given and applies
