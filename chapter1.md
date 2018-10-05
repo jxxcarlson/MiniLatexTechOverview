@@ -139,10 +139,18 @@ render latexState latexExpression =
 
 As mentioned, the short pipeline `Source => AST => Html` is
 rough description of the parse-render pipeline. There is in
-fact quite a bit more to it. The first step is to
+fact quite a bit more to it.
+
+### Chunking
+
+The first step is to
 chunk the source text into a list of "logical paragraphs."
 These are either normal paragraphs or an outer begin-end
-pair for an environment. Next, an empty `LatexState` is
+pair for an environment.
+
+### Applying accumulators
+
+In the next step, an empty `LatexState` is
 created. A value of this type holds information on counters
 for sections, cross-references, etc. To compute these, we
 use a function with the signature
