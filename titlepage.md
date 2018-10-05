@@ -1,6 +1,4 @@
-% MiniLatex: a Technical Overview
-
-# James Carlson
+## James Carlson
 
 ## jxxcarlson@gmail.com
 

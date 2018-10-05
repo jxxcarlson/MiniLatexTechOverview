@@ -1,6 +1,6 @@
 # Summary
 
-- [Title page](titlepage.md)
+- [MiniLatex: Technical Overview](titlepage.md)
 - [Introduction](README.md)
 - [Overview](overview.md)
 - [Parser](parser.md)
