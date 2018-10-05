@@ -1,3 +1,7 @@
+---
+description: an overview of MiniLatexx
+---
+
 # Overview
 
 The operation of MiniLatex, in rough form, is this:
