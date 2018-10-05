@@ -34,6 +34,11 @@ and it is, in abbreviated form, the
 first paragraph of code that I wrote
 in developing the system.
 
+In this overview we give some examples of how short bit of
+source text are parsed and rendered, then discuss the overall
+design of the renderer. In the next section we discuss the
+design of the parser.
+
 ## Parsing: Examples
 
 Below are some examples of how source text is parsed and rendered.
@@ -128,4 +133,63 @@ render latexState latexExpression =
 
         LXError error ->
             Html.p [ HA.style "color" "red" ] [ Html.text <| String.join "\n---\n\n" (List.map errorReport error) ]
+```
+
+## Elaborating the pipeline
+
+As mentioned, the short pipeline `Source => AST => Html` is
+rough description of the parse-render pipeline. There is in
+fact quite a bit more to it. The first step is to
+chunk the source text into a list of "logical paragraphs."
+These are either normal paragraphs or an outer begin-end
+pair for an environment. Next, an empty `LatexState` is
+created. A value of this type holds information on counters
+for sections, cross-references, etc. To compute these, we
+use a function with the signature
+
+```
+type alias Accumulator : state -> List a -> (state, List b)
+```
+
+Thus an **Accumulator** takes a `state` and a list of `a`'s and
+returns a list of `b`'s as well as a new `state`. We employ
+two accumulators. The first one looks like this:
+
+```
+Accumulator.parse :
+    LatexState
+    -> List String
+    -> ( LatexState, List (List LatexExpression) )
+Accumulator.parse latexState paragraphs =
+    paragraphs
+        |> List.foldl parseReducer ( latexState, [] )
+```
+
+Parsing a paragraph generates a list of `LatexExpressions`,
+so applying `Accumulator.parse` produces a list of lists of  
+`LatexExpressions`, together with a `LatexState` that
+holds all the information needed to give sequentially
+numbered sections, resolve cross-references,
+
+A second accumulator takes the information given and applies
+a renderer to each `List LatexExpression` to produce
+a new pair `( LatexState, List a )`. If the renderer
+has type `LatexState -> List LatexExpression -> a`, then
+the list produces is a `List String`. This is the case
+of rendering to standard HTML text. If the renderer
+has type `LatexState -> List LatexExpression -> Html msg`, then
+the list produces is a `List (Html msg)`. This is the case
+of rendering to Elm's natural type representing HTML.
+
+Here is the definition:
+
+```
+Accumulator.render :
+   (LatexState -> List LatexExpression -> a)
+    -> LatexState
+    -> List (List LatexExpression)
+    -> ( LatexState, List a )
+Accumulator.render renderer latexState paragraphs =
+    paragraphs
+        |> List.foldl (renderReducer renderer) ( latexState, [] )
 ```
