@@ -290,3 +290,14 @@ latexStateReducerDict =
         , ( ( "smacro", "bibitem" ), \x y -> SRH.setBibItemXRef x y )
         ]
 ```
+
+## Some conclusions
+
+The reliance of `Accumulator.parse` and `Accumulator.render`
+on the `LatexState` record, as well as the `latexStateReducerDict`
+for dispatching calls to `latexStateReducer` makes it very easy
+to add new features -- new macros and new environments -- that
+whose rendering requires a computed state. Moreover, it is
+not hard to add fields to `LatexState` in order to add new features.
+Indeed, the first version of `LatexInfo` had only a `counters` field.
+Others were added later as the scope of MiniLatex grew.
