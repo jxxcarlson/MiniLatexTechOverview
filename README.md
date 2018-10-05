@@ -4,7 +4,9 @@
 
 ## October 5, 2018
 
-<br><br><br>
+<br/><br/><br/>
+
+<br/><br/><br/>
 
 MiniLatex is
 
