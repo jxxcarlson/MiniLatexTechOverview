@@ -15,7 +15,7 @@ It transforms the AST to HTML, some equivalent structure.
 
 The type of the AST is defined as follows:
 
-```elm
+```haskell
 type LatexExpression
     = LXString String
     | Comment String
@@ -58,28 +58,28 @@ the string `"<span>Hello, Alonzo!</span>"`.
 
 1.
 
-```elm
+```haskell
 "$a^2 + b^2 = c^2$" ==> Ok (InlineMath ("a^2 + b^2 = c^2"))
                     ==> "$a^2 + b^2 = c^2$"
 ```
 
 2.
 
-```elm
+```haskell
 "\\italic{Wow!}" ==> Ok (Macro "italic" [] [LatexList [LXString "Wow!"]])
                  ==> "<i>Wow!</i>"
 ```
 
 3.
 
-```elm
+```haskell
 "\\italic{" ==> Err [{ col = 9, problem = ExpectingSymbol "}", row = 1 }]
             ==> <red>ExpectingSymbol "}"</red>
 ```
 
 4.
 
-```elm
+```haskell
 \\foo{1}{2, $x^2$} => Ok (Macro "foo" []
                           [LatexList
                              [LXString "1"]
@@ -95,7 +95,7 @@ renderer is not at all difficult.
 
 ## Rendering
 
-```elm
+```haskell
 render : LatexState -> LatexExpression -> Html msg
 render latexState latexExpression =
     case latexExpression of
