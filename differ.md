@@ -22,7 +22,7 @@ strategy is near-optimal.
 The stuctures `u = a x b`, `v = u y b` map directly
 onto the `DiffRecord` type:
 
-```
+```elm
 type alias DiffRecord =
     { commonInitialSegment : List String
     , commonTerminalSegment : List String
@@ -33,7 +33,7 @@ type alias DiffRecord =
 
 The implementation of
 
-```
+```elm
 diff : List String -> List String -> DiffRecord
 ```
 
@@ -45,7 +45,7 @@ The function `diff` carries out the transformation `a x b => a y b`.
 To effect `a' x' b' => a' y' b'`, one needs the notion of an
 `EditRecord`, which carries the needed state:
 
-```
+```elm
 type alias EditRecord a =
     { paragraphs : List String
     , renderedParagraphs : List a
@@ -75,9 +75,9 @@ Below is the definition of `differentialRender`. It takes
 a rendering function, a `DiffRecord`, and an `EditRecord`
 as input and produces a list of rendered paragraphs as output.
 
-```
-differentialRender : (String -> a) -> DiffRecord -> EditRecord a -> List a
-differentialRender renderer diffRecord editRecord =
+```elm
+Differ.differentialRender : (String -> a) -> DiffRecord -> EditRecord a -> List a
+Differ.differentialRender renderer diffRecord editRecord =
     let
         ii =
             List.length diffRecord.commonInitialSegment
@@ -97,11 +97,32 @@ differentialRender renderer diffRecord editRecord =
     initialSegmentRendered ++ middleSegmentRendered ++ terminalSegmentRendered
 ```
 
-## Updating and EditRecord
+## Updating an EditRecord
 
-```
-update : Int -> (String -> a) -> EditRecord a -> String -> EditRecord a
-update seed transformer editRecord text =
+Updating an `EditRecord` is a multistep process. The `Differ.update`
+function takes as input a random number seed, a rendering function,
+and `EditRecord`, and a string of source text. The output is
+an updated `EditRecord`. Here are the steps:
+
+1. Apply `logicalParagraphify` to transform the input source text
+   string into a list of logical paragraphs.
+
+2. Apply `diff` to the given `EditRecord` and the list of logical paragraphs
+   to produce a `DiffRecord`.
+
+3. Apply `differentialRender` to the `DiffRecord (2) and the list
+   of logical paragraphs (3) to produce to produce an updated list
+   of rendererd paragraphs.
+
+4. Apply `differentialIdList` to the random seet, the `DiffRecord`, and
+   the initial `EditRecord` to create a new list of paragraph `ids`.
+
+The final step is to used the information harvested in 1--4 to create
+a new `EditRecord`.
+
+```elm
+Differ.update : Int -> (String -> a) -> EditRecord a -> String -> EditRecord a
+Differ.update seed transformer editRecord text =
     let
         newParagraphs =
             Paragraph.logicalParagraphify text
@@ -115,5 +136,5 @@ update seed transformer editRecord text =
         p =
             differentialIdList seed diffRecord editRecord
     in
-    EditRecord newParagraphs newRenderedParagraphs emptyLatexState p.idList p.newIdsStart p.newIdsEnd
+    EditRecord newParagraphs newRenderedParagraphs emptyLatexState p.idList
 ```
