@@ -69,6 +69,8 @@ are changed. The corresponding `ids` in the new rendered
 text are something like `p.3785.17` and `p.3785.18`, where
 `3785` is randomly generated.
 
+## Differential rendering
+
 Below is the definition of `differentialRender`. It takes
 a rendering function, a `DiffRecord`, and an `EditRecord`
 as input and produces a list of rendered paragraphs as output.
@@ -94,6 +96,8 @@ differentialRender renderer diffRecord editRecord =
     in
     initialSegmentRendered ++ middleSegmentRendered ++ terminalSegmentRendered
 ```
+
+## Updating and EditRecord
 
 ```
 update : Int -> (String -> a) -> EditRecord a -> String -> EditRecord a
