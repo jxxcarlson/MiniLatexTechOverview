@@ -17,7 +17,7 @@ changes to the list `v`. However, a real human editor generally
 makes small, localized changes to `v`, so in "real life," the
 strategy is near-optimal.
 
-NOTE. I would like to thank Ilias van Peer for
+NOTE. I would like to thank Ilias van Peer, who
 recommended using a diffing strategy for
 performance optimization.
 
