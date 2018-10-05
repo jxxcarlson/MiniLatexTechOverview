@@ -30,7 +30,7 @@ performance optimization.
 The stuctures `u = a x b`, `v = u y b` map directly
 onto the `DiffRecord` type:
 
-```haskell
+```elm
 type alias DiffRecord =
     { commonInitialSegment : List String
     , commonTerminalSegment : List String
@@ -41,7 +41,7 @@ type alias DiffRecord =
 
 The implementation of
 
-```haskell
+```elm
 diff : List String -> List String -> DiffRecord
 ```
 
@@ -53,7 +53,7 @@ The function `diff` carries out the transformation `a x b => a y b`.
 To effect the transformation `a' x' b' => a' y' b'`, one needs the notion of an
 `EditRecord`, which carries the needed state:
 
-```haskell
+```elm
 type alias EditRecord a =
     { paragraphs : List String
     , renderedParagraphs : List a
@@ -83,7 +83,7 @@ Below is the definition of `differentialRender`. It takes
 a rendering function, a `DiffRecord`, and an `EditRecord`
 as input and produces a list of rendered paragraphs as output.
 
-```haskell
+```elm
 Differ.differentialRender : (String -> a) -> DiffRecord -> EditRecord a -> List a
 Differ.differentialRender renderer diffRecord editRecord =
     let
@@ -128,7 +128,7 @@ an updated `EditRecord`. Here are the steps:
 The final step is to used the information harvested in 1--4 to create
 a new `EditRecord`.
 
-```haskell
+```elm
 Differ.update : Int -> (String -> a) -> EditRecord a -> String -> EditRecord a
 Differ.update seed transformer editRecord text =
     let

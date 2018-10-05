@@ -9,7 +9,7 @@ the parser for environments, which is both the most important and the most compl
 
 Here is the top-level parsing function:
 
-```haskell
+```elm
 latexExpression : Parser LatexExpression
 latexExpression =
     oneOf
@@ -27,7 +27,7 @@ latexExpression =
 If one reads down the argument list of `oneOf`, one can extract this production
 for a grammar for MiniLatex:
 
-```haskell
+```elm
 LatexExpression -> Comment
                  | DisplayMath
                  | InlineMath
@@ -40,7 +40,7 @@ LatexExpression -> Comment
 We will come back to this later when we discuss the MiniLatex grammar.
 Let us look at some other parsing functions.
 
-```haskell
+```elm
 macro : Parser () -> Parser LatexExpression
 macro wsParser =
     succeed Macro
@@ -57,7 +57,7 @@ white space -- perhaps just `' '`, or perhaps
 newlines as well. The `succeed` funtion has
 signature
 
-```haskell
+```elm
 succeed : a -> Parser a
 ```
 
@@ -76,7 +76,7 @@ passing these to `Macro`. The pipeline ignores
 any trailing whitespace. Here are the signatures of the parser pipeline
 operators:
 
-```haskell
+```elm
 (|=) : Parser (a -> b) -> Parser a -> Parser b
 (|.) : Parser keep -> Parser ignore -> Parser keep
 ```
@@ -84,7 +84,7 @@ operators:
 As with the top level parser, we can derive a production for the
 MiniLatex grammar:
 
-```haskell
+```elm
 Macro -> MacroName | OptionalArg* | Arg*
 ```
 
@@ -94,7 +94,7 @@ The environnment parser is the most complex of the parsers.
 We give a simplified version, then discuss the changes
 needed to obtain the actual parser.
 
-```haskell
+```elm
 environment : Parser LatexExpression
 environment =
   envName |> andThen environmentOfType
@@ -115,13 +115,13 @@ envName =
 There is a companion parser `endWord`, which recognizes text like
 `\\end{foo}`. The parser `andThen` is used to sequence parsers:
 
-```haskell
+```elm
 andThen : (a -> Parser b) -> Parser a -> Parser b
 ```
 
 Consider now the second parser which makes up `environment`
 
-```haskell
+```elm
 environmentOfType : String -> Parser LatexExpression
 environmentOfType envType =
   let
@@ -142,7 +142,7 @@ At this point the use of the two arguments is redundant. However,
 for the "real" parser, `envType` needs to be transformed: in some cases,
 it is passed through as is, while in others it is changed.
 
-```haskell
+```elm
 environmentParser : String -> String -> Parser LatexExpression
 environmentParser endWord_ envType =
   succeed (Environment envType)
@@ -165,14 +165,14 @@ andThen : (a -> Parser b) -> Parser a -> Parser b
 
 My favorite way of thinking about **bind** is to use the function
 
-```haskell
+```elm
 beta : (b -> Mc) -> M b -> M c
 ```
 
 Consider functions `f : a -> M b` and `g : b -> M c`. Then
 one can define
 
-```haskell
+```elm
 g o f = \x -> beta g (f x)
 ```
 
