@@ -4,7 +4,7 @@
 
 **October 5, 2018**
 
-![Printing press!](https://www.psprint.com/sites/default/files/special/opt-bg-img-2.jpg)
+![Printing press!](http://davincid.weebly.com/uploads/4/7/6/1/47614109/2304036.jpg?1424892943)
 
 **MiniLatex** is
 
