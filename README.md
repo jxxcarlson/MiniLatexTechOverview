@@ -27,3 +27,8 @@ For a demonstration of this technology, see
 [MiniLatex Live](https://jxxcarlson.github.io/app/miniLatexLive/index.html).
 For a full content-management system based on MiniLatex, see
 [knode.io](https://knode.io)
+
+MiniLatex is written in [Elm](http://elm-lang.org/),
+a statically typed functional language. The code
+is available both on [GitHub](https://github.com/jxxcarlson/meenylatex)
+and at [package.elm-lang.org](https://package.elm-lang.org/packages/jxxcarlson/meenylatex/latest/)

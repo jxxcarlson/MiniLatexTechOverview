@@ -1,5 +1,6 @@
 # Summary
 
 - [Introduction](README.md)
-- [Overview](chapter1.md)
+- [Overview](overview.md)
+- [Parser](parser.md)
 - [Notes](NOTES.md)
