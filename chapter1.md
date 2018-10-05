@@ -1,4 +1,4 @@
-# AST and Parser
+# Overview
 
 The operation of MiniLatex, in rough form, is this:
 
@@ -34,6 +34,8 @@ and it is, in abbreviated form, the
 first paragraph of code that I wrote
 in developing the system.
 
+# Parsing: Examples
+
 Below are some examples of how source text is parsed and rendered.
 The parsing examples were computed as in the following:
 
@@ -48,8 +50,6 @@ The parsing examples were computed as in the following:
 
 The value `LXString ("Hello, Alonzo")` is rendered to
 the string `"<span>Hello, Alonzo!</span>"`.
-
-## Examples
 
 1.
 
