@@ -17,6 +17,10 @@ changes to the list `v`. However, a real human editor generally
 makes small, localized changes to `v`, so in "real life," the
 strategy is near-optimal.
 
+NOTE. I would like to thank Ilias van Peer for
+recommended using a diffing strategy for
+performance optimization.
+
 ## Implementing the diff stategy
 
 The stuctures `u = a x b`, `v = u y b` map directly
