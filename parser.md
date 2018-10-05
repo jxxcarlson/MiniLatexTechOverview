@@ -2,6 +2,11 @@
 
 The MiniLatex parser is written in Elm using
 Evan Czaplicki's [parser combinator package](https://package.elm-lang.org/packages/elm/parser/latest/).
+We will take a look at some of the top level parsers, then examine in detail
+the parser for environments, which is both the most important and the most complex one.
+
+## Top level parsers
+
 Here is the top-level parsing function:
 
 ```elm
