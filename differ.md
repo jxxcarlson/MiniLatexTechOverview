@@ -1,9 +1,13 @@
 # Differ
 
 MiniLatex uses a number of optimizations. One of these
-is to re-parser only paragraphs which have. This is
-relevant to the editing process, since instantaneous
-feedback is essential for a satisfying user experience.
+is to re-parse and re-render only paragraphs which have
+changed. This is optimization is important for the editing
+process, since instantaneous feedback is essential for a
+satisfying user experience. Such differential transformations
+are more important for parsing than for rendering, since
+parsing is by far the most expensive process in terms
+of execution time.
 
 The strategy is as follows. Let `u` and `v` be two lists
 of strings. Write them as `u = a x b`, `v = u y b`,
