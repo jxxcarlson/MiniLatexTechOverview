@@ -1,7 +1,7 @@
 # Summary
 
-- [MiniLatex: Technical Overview](titlepage.md)
-- [Introduction](README.md)
+- [MiniLatex: Technical Overview](README.md)
+- [Introduction](introduction.md)
 - [Overview](overview.md)
 - [Parser](parser.md)
 - [Accumulator](accumulator.md)
