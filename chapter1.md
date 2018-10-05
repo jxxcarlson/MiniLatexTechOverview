@@ -34,7 +34,7 @@ and it is, in abbreviated form, the
 first paragraph of code that I wrote
 in developing the system.
 
-# Parsing: Examples
+## Parsing: Examples
 
 Below are some examples of how source text is parsed and rendered.
 The parsing examples were computed as in the following:
