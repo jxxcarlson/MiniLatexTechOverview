@@ -1,8 +1,8 @@
-## by James Carlson
+**by James Carlson**
 
-### jxxcarlson@gmail.com
-
-### October 5, 2018
+**jxxcarlson@gmail.com**
+\*\*
+**October 5, 2018**
 
 <br/><br/><br/>
 
@@ -11,6 +11,8 @@
 1. a subset of LaTeX
 
 2. a program that parses MiniLatex and renders it as HTML
+
+3. and does that in the blink of an eye
 
 Try the demo at [MiniLatex Live](https://jxxcarlson.github.io/app/miniLatexLive/index.html),
 or take a look at [knode.io](https://knode.io)
