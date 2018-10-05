@@ -4,7 +4,7 @@
 
 **October 5, 2018**
 
-<br/><br/><br/>
+![Printing press](/image/printingpress.gif)
 
 **MiniLatex** is
 
