@@ -137,7 +137,10 @@ envName |> andThen environmentOfType == andThen environmentOfType envName
 ```
 
 The result is that the information gathered by `environment` is passed
-to `environmentParser` with arguments of the form `\\end{foo}` and `foo`
+to `environmentParser` with arguments of the form `\\end{foo}` and `foo`.
+At this point the use of the two arguments is redundant. However,
+for the "real" parser, `envType` needs to be transformed: in some cases,
+it is passed through as is, while in others it is changed.
 
 ```elm
 environmentParser : String -> String -> Parser LatexExpression
@@ -173,5 +176,5 @@ one can define
 g o f = \x -> beta g (f x)
 ```
 
-Thus bind/beta give a way of composing "monadic" functions `f`
+Thus bind/beta gives a way of composing "monadic" functions `f`
 and `g`, where `M` is the monad.
