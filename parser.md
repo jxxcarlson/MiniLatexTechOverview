@@ -4,7 +4,7 @@ The MiniLatex parser is written in Elm using
 Evan Czaplicki's [parser combinator package](https://package.elm-lang.org/packages/elm/parser/latest/).
 Here is the top-level parsing function:
 
-```
+```elm
 latexExpression : Parser LatexExpression
 latexExpression =
     oneOf
@@ -22,7 +22,7 @@ latexExpression =
 If one reads down the argument list of `oneOf`, one can extract this production
 for a grammar for MiniLatex:
 
-```
+```elm
 LatexExpression -> Comment
                  | DisplayMath
                  | InlineMath
@@ -35,7 +35,7 @@ LatexExpression -> Comment
 We will come back to this later when we discuss the MiniLatex grammar.
 Let us look at some other parsing functions.
 
-```
+```elm
 macro : Parser () -> Parser LatexExpression
 macro wsParser =
     succeed Macro
@@ -52,7 +52,7 @@ white space -- perhaps just `' '`, or perhaps
 newlines as well. The `succeed` funtion has
 signature
 
-```
+```elm
 succeed : a -> Parser a
 ```
 
@@ -71,7 +71,7 @@ passing these to `Macro`. The pipeline ignores
 any trailing whitespace. Here are the signatures of the parser pipeline
 operators:
 
-```
+```elm
 (|=) : Parser (a -> b) -> Parser a -> Parser b
 (|.) : Parser keep -> Parser ignore -> Parser keep
 ```
@@ -79,6 +79,94 @@ operators:
 As with the top level parser, we can derive a production for the
 MiniLatex grammar:
 
-```
+```elm
 Macro -> MacroName | OptionalArg* | Arg*
 ```
+
+## The environment parser
+
+The environnment parser is the most complex of the parsers.
+We give a simplified version, then discuss the changes
+needed to obtain the actual parser.
+
+```elm
+environment : Parser LatexExpression
+environment =
+  envName |> andThen environmentOfType
+```
+
+The envName parser recognizes text of the form `\\begin{foo}`, extracting
+the string `foo`:
+
+```el
+envName : Parser String
+envName =
+  succeed identity
+    |. PH.spaces
+    |. symbol "\\begin{"
+    |= parseToSymbol "}"
+```
+
+There is a companion parser `endWord`, which recognizes text like
+`\\end{foo}`. The parser `andThen` is used to sequence parsers:
+
+```elm
+andThen : (a -> Parser b) -> Parser a -> Parser b
+```
+
+Consider now the second parser which makes up `environment`
+
+```elm
+environmentOfType : String -> Parser LatexExpression
+environmentOfType envType =
+  let
+    theEndWord = "\\end{" ++ envType ++ "}"
+  in
+    environmentParse theEndWord envType
+```
+
+One sees that the types match, since
+
+```
+envName |> andThen environmentOfType == andThen environmentOfType envName
+```
+
+The result is that the information gathered by `environment` is passed
+to `environmentParser` with arguments of the form `\\end{foo}` and `foo`
+
+```elm
+environmentParser : String -> String -> Parser LatexExpression
+environmentParser endWord_ envType =
+  succeed (Environment envType)
+    |. ws
+    |= (nonemptyItemList latexExpression) |> map LatexList)
+    |. ws
+    |. symbol endWord_
+    |. ws
+```
+
+## Monads in Elm
+
+The `andThen` function is a variant of the bind function for the `Parser` monad.
+Compare the type signatures:
+
+```
+andThen : (a -> Parser b) -> Parser a -> Parser b
+(>>=) : M b -> (b -> Mb) -> M c
+```
+
+My favorite way of thinking about **bind** is to use the function
+
+```elm
+beta : (b -> Mc) -> M b -> M c
+```
+
+Consider functions `f : a -> M b` and `g : b -> M c`. Then
+one can define
+
+```elm
+g o f = \x -> beta g (f x)
+```
+
+Thus bind/beta give a way of composing "monadic" functions `f`
+and `g`, where `M` is the monad.
