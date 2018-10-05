@@ -146,7 +146,10 @@ fact quite a bit more to it.
 The first step is to
 chunk the source text into a list of "logical paragraphs."
 These are either normal paragraphs or an outer begin-end
-pair for an environment.
+pair for an environment. Chunking is carried out by
+a finite state machine that only looks at the beginnings
+of lines. It is designed to be much faster than parsing,
+which must look at each character.
 
 ### Applying accumulators
 
@@ -199,3 +202,46 @@ Accumulator.render renderer latexState paragraphs =
     paragraphs
         |> List.foldl (renderReducer renderer) ( latexState, [] )
 ```
+
+### Spacifying
+
+There is subtlety to rendering a `LatexList`. The parsing
+process creates a list of `LatexExpressions`. When these
+are rendered the rendered results must be joined to form
+good prose. The question is, should they be joined with
+a space between them, or with no intervening space. The
+answer is:it depends. We resolve this problem by running
+the list through a `spacify` function that adds space
+where needed. Then, in the end, rendered elements can
+be joined end-to-end. Here is how we render a list
+of `LatexExpressions`:
+
+```
+renderLatexList : LatexState -> List LatexExpression -> Html msg
+renderLatexList latexState latexList =
+    latexList
+        |> spacify
+        |> List.map (render latexState)
+        |> (\list -> Html.span [ HA.style "margin-bottom" "10px" ] list)
+```
+
+Spacifying is carried out by
+a "List machine," as described in
+[this post on Medium](https://medium.com/me/stats/post/c07700bba13c).
+A List Machine reads a tape, just as does a Turing machine,
+but it only has access to the current square on the tape,
+the one before it, and the one after it.
+
+There is an addt
+
+```
+spacify : List LatexExpression -> List LatexExpression
+spacify latexList =
+    latexList
+        |> ListMachine.runMachine addSpace
+```
+
+The `renderLatexList` function prodece elements that can be
+joined end-to-end. In the case of a list of `Html msg`,
+theres are sent directly to the DOM, where MathJax can operate
+on exposed elements to produce an esthetically pleasing result.
