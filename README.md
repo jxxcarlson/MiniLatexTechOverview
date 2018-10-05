@@ -8,4 +8,4 @@ MiniLatex is
 
 1. a subset of LaTeX
 
-2. a program that parses LaTeX and renders it to HTML
+2. a program that parses MiniLatex and renders it to HTML
