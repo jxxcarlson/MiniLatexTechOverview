@@ -1,24 +1,21 @@
-## James Carlson
+## by James Carlson
 
-## jxxcarlson@gmail.com
+### jxxcarlson@gmail.com
 
-## October 5, 2018
-
-<br/><br/><br/>
+### October 5, 2018
 
 <br/><br/><br/>
 
-MiniLatex is
+**MiniLatex** is
 
 1. a subset of LaTeX
 
-2. a program that parses MiniLatex and renders it to HTML
+2. a program that parses MiniLatex and renders it as HTML
 
-Try the demo at [MiniLatex Live](https://jxxcarlson.github.io/app/miniLatexLive/index.html)
+Try the demo at [MiniLatex Live](https://jxxcarlson.github.io/app/miniLatexLive/index.html),
+or take a look at [knode.io](https://knode.io)
 
-Or take a look at [knode.io](https://knode.io)
-
-Sample documents:
+**Sample documents:**
 
 - [knode.io/427](https://knode.io/427)
 
