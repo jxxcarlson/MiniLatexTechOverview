@@ -4,6 +4,8 @@
 
 ## October 5, 2018
 
+<br><br><br>
+
 MiniLatex is
 
 1. a subset of LaTeX
