@@ -68,4 +68,17 @@ The symbol `|.` means "apply the parser on the right and ignore the result."
 In this case, the parser pipeline will "eat" the name of the macro,
 the list of optional arguments, and the list of regular arguments,
 passing these to `Macro`. The pipeline ignores
-any trailing whitespace.
+any trailing whitespace. Here are the signatures of the parser pipeline
+operators:
+
+```
+(|=) : Parser (a -> b) -> Parser a -> Parser b
+(|.) : Parser keep -> Parser ignore -> Parser keep
+```
+
+As with the top level parser, we can derive a production for the
+MiniLatex grammar:
+
+```
+Macro -> MacroName | OptionalArg* | Arg*
+```
