@@ -232,8 +232,6 @@ A List Machine reads a tape, just as does a Turing machine,
 but it only has access to the current square on the tape,
 the one before it, and the one after it.
 
-There is an addt
-
 ```
 spacify : List LatexExpression -> List LatexExpression
 spacify latexList =
@@ -241,7 +239,12 @@ spacify latexList =
         |> ListMachine.runMachine addSpace
 ```
 
-The `renderLatexList` function prodece elements that can be
-joined end-to-end. In the case of a list of `Html msg`,
-theres are sent directly to the DOM, where MathJax can operate
-on exposed elements to produce an esthetically pleasing result.
+In this way, `renderLatexList` function prodece elements that can be
+joined end-to-end.
+
+### MathJax
+
+The appropriately spacifyied value `Html msg`,
+is sent directly to the DOM. If it contains math text,
+MathJax can operate on exposed element which produce an
+esthetically pleasing result.
