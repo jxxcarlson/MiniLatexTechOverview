@@ -161,6 +161,8 @@ Ok (Macro "section" [] [LatexList [LXString "foo"]])
 What is important is that the paragraph begins with the section macro.
 Consider now the definition of `latexStateReducerDispatcher` listed below.
 
+### latexStateReducerDispatcher
+
 ```
 latexStateReducerDispatcher : LatexInfo -> (LatexInfo -> LatexState -> LatexState)
 latexStateReducerDispatcher theInfo =
@@ -226,6 +228,8 @@ type alias LatexState =
     }
 ```
 
+### Example: rendering a section
+
 To conclude this discussion, here is how a section is rendered:
 
 ```
@@ -257,6 +261,8 @@ data harvested from running `Accumulator.parse`, e.g., the table of contents
 and the cross-references. As each section in the parsed input is encountered, the
 section counter is advanced and is used to render the section with its correct
 sequence number.
+
+### latexStateReducerDict
 
 ```
 latexStateReducerDict : Dict.Dict ( String, String ) (LatexInfo -> LatexState -> LatexState)
