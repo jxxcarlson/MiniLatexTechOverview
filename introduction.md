@@ -49,7 +49,7 @@ thanks to
 Evan suggested that I look at `elm/parser` tools.
 I did, and that is how this project was born.
 Evan also suggested that I render to `Html a`
-rather than to regular HTML This `decision` proved, like the
+rather than to regular HTML This decision proved, like the
 use of `elm/parser` to be a very good one, and it
 is part of what make rendering so fast for MiniLatex.
 
@@ -65,4 +65,4 @@ As I made the transition from version
 what looked like a blocking problem in using
 MathJax to render mathematical equations.
 Luke provided me with a few beautiful lines
-of code that mde it all work. Wow!
+of code that mde it all work.
