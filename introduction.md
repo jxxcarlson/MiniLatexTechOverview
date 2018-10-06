@@ -46,19 +46,22 @@ thanks to
 - Ilias van Peer
 - Luke Westby
 
-Evan suggested that I look at `elm/parser` tools.
-I did, and that is how this project was born.
-Evan also suggested that I render to `Html a`
-rather than to regular HTML This decision proved, like the
-use of `elm/parser` to be a very good one, and it
-is part of what make rendering so fast for MiniLatex.
+Evan suggested that I look at `elm/parser` tools
+for building a parser for another project.
+I did, and after a few weeks of study, I realized
+that I could attempt something much more ambitious:
+a parser for subset of LaTeX. That is how this project
+was born. Evan later suggested that I render to `Html a`
+rather than to regular HTML This change is part of
+what make rendering so very fast.
 
 In starting this project, I had never
 used parser combinators before, so
-going from the definition of the type of AST to
+going from the definition of the type of the AST to
 a functioning parser was slow-going indeed.
-Ilias, whom I have never met, was unstinting
-in his generous and effective help. Thankyou, Ilias!
+Ilias, whom I have never met, other than through
+the Elm Slack, knows these things cold,
+and was unstinting in his generous help.
 
 As I made the transition from version
 0.18 to 0.19 of the Elm compiler, I encountered
