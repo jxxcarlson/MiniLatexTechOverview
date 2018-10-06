@@ -6,4 +6,5 @@
 - [Parser](parser.md)
 - [Accumulator](accumulator.md)
 - [Differ](differ.md)
+- [List Machine](listmachine.md)
 - [Notes](NOTES.md)
