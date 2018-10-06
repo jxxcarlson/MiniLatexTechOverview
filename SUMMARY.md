@@ -7,4 +7,7 @@
 - [Accumulator](accumulator.md)
 - [Differ](differ.md)
 - [List Machine](listmachine.md)
+- [Specification](specification.md)
+- [Grammar](grammar.md)
+- [Plans](plans.md)
 - [Notes](NOTES.md)

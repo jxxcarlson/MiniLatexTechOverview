@@ -1,7 +1,3 @@
----
-description: an overview of MiniLatexx
----
-
 # Overview
 
 The operation of MiniLatex, in rough form, is this:
@@ -107,6 +103,26 @@ a sub-renderer for each component of the type of the AST. The design of the
 renderer is not at all difficult.
 
 ## Rendering
+
+MiniLatex has three renderers. One yields HTML, that is,
+a string. Another yields `Html msg`, the native type for
+HTML in Elm, the language in which MiniLatex is written.
+There is also a renderer that produces standard LaTeX.
+
+The render-to-latex function is used to export MiniLatex
+documents. It is also useful for checking
+correctness. Let `f` denote the operation "parse,
+then render to Latex." If `f` operates correctly,
+then the idempotency
+relation `f o f = f` holds. In that case,
+`(f o f)(s) = f(s)` for all exemplars of
+source text `s`. Thus, if equality is violated
+for any `s`, one knows that there is an error
+in the parse-render pipeline.
+
+In this document we discusson only the renderer with
+`Html msg` as target. Here is the top-level rendering
+function:
 
 ```elm
 render : LatexState -> LatexExpression -> Html msg
