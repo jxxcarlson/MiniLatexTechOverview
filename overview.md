@@ -163,7 +163,7 @@ Source text => List of paragraphs                           -- Paragraph.paragra
             => DOM                                          -- MathJax
 ```
 
-### Chunkng
+### Chunking
 
 Chunk source text into a list of logical paragraphs:
 `String -> List String`. Logical paragraphs are either
