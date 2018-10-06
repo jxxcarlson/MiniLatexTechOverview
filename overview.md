@@ -11,13 +11,13 @@ Source text => AST => HTML
 ```
 
 The AST is an _abstract syntax tree_, a kind of labeled
-tree from which the source text can be derived, but which
+tree from which the source text can be rederived, but which
 in addition reflects an understanding of the grammar
-of MiniLatex. Source text is transformed to an AST by
-applying a _parser_. The second arrow is the _renderer_.
-It transforms the AST to HTML, or some equivalent structure
-such as `Html msg`, Elm's native data type for producing
-HTML.
+of MiniLatex. Because of this latter fact, many other
+transformations are possible, e.g., transformation to
+HTML.Source text is transformed to an AST by
+applying a _parser_. The second arrow, from AST to HTML,
+is the _renderer_.
 
 The type of the AST is defined as follows:
 
@@ -103,7 +103,7 @@ the string `"<span>Hello, Alonzo!</span>"`.
 ```
 
 Rendering is carried out by a function `render` which dispatches a call to
-a sub-renderer for component of the type of the AST. The design of the
+a sub-renderer for each component of the type of the AST. The design of the
 renderer is not at all difficult.
 
 ## Rendering
@@ -148,19 +148,20 @@ render latexState latexExpression =
             Html.p [ HA.style "color" "red" ] [ Html.text <| String.join "\n---\n\n" (List.map errorReport error) ]
 ```
 
-## Elaborating the pipeline
+## <a name="elaborating"> Elaborating the pipeline
 
-As mentioned, the short pipeline `Source => AST => Html` is
+As mentioned, the short pipeline `Source => AST => Html` is a
 rough description of the parse-render pipeline. There is in
-fact quite a bit more to it. In outline, here is the process
+fact quite a bit more to it. In outline, here is the process:
 
 ```elm
-Source text => List of paragraphs                           -- Paragraph.paragraphify
-            => (LatexState, List (List LatexExpression))    -- Accumulator.parse
-            => ( LatexState, List (Html msg))               -- Accumulator.render
-            =>  Html msg                                    -- |> Html.div []
-            => DOM                                          -- Elm runtime
-            => DOM                                          -- MathJax
+Source text
+   => List of paragraphs                           -- Paragraph.paragraphify
+   => (LatexState, List (List LatexExpression))    -- Accumulator.parse
+   => ( LatexState, List (Html msg))               -- Accumulator.render
+   =>  Html msg                                    -- |> Html.div []
+   => DOM                                          -- Elm runtime
+   => DOM                                          -- MathJax
 ```
 
 ### Chunking
@@ -168,7 +169,7 @@ Source text => List of paragraphs                           -- Paragraph.paragra
 Chunk source text into a list of logical paragraphs:
 `String -> List String`. Logical paragraphs are either
 normal paragraphs or an outer begin-end
-pair for an environment. Chunking is carried out by
+pair of an environment. Chunking is carried out by
 a finite state machine that only looks at the beginnings
 of lines. It is designed to be much faster than parsing,
 which must look at each character.
@@ -189,7 +190,7 @@ information for cross-references, etc. If one
 applies `Accumulator.parse` to an empty `LatexState`
 and a list of strings, the final `LatexState` carries
 the information needed to render sections with
-sequential numbers, resolve cross-refernces, etc.
+sequential numbers, resolve cross-references, etc.
 
 ```elm
 Accumlator.parse :
@@ -236,10 +237,10 @@ In the outline above, `a = Html msg`.
 
 There is subtlety to rendering a `LatexList`. The parsing
 process creates a list of `LatexExpressions`. When these
-are rendered the rendered results must be joined to form
+are rendered, the rendered results must be joined to form
 good prose. The question is, should they be joined with
 a space between them, or with no intervening space. The
-answer is:it depends. We resolve this problem by running
+answer is: it depends. We resolve this problem by running
 the list through a `spacify` function that adds space
 where needed. Then, in the end, rendered elements can
 be joined end-to-end. Here is how we render a list
@@ -268,7 +269,7 @@ spacify latexList =
         |> ListMachine.runMachine addSpace
 ```
 
-In this way, `renderLatexList` function prodece elements that can be
+In this way, `renderLatexList` function produces elements that can be
 joined end-to-end.
 
 ### MathJax

@@ -5,10 +5,14 @@ The MiniLatex toolchain transforms LaTeX source text to HTML,
 a statement that must be qualified as follows:
 
 - It handles **subset** of LaTeX, namely, **MiniLatex**.
+
 - The parser-renderer transforms text-mode source text:
-  the macros and environments which make up MiniLatex.
-  Math-mode text, e.g. $a^2 + b^2 = c^2$ is then rendered
-  by MathJax, or some similar program.
+  the macros like `\italic` and environments like
+  `\begin{theorem} ... \end{theorem}` which make up MiniLatex.
+  Math-mode text, e.g. $a^2 + b^2 = c^2$ is rendered
+  by MathJax, or some similar program. It is this
+  division of labor that makes the MiniLatex project feasible.
+
 - There are various renderers. One yields HTML, that is,
   a string. Another yields `Html msg`, Elm's native type for
   HTML. There is also a renderer that produces standard LaTeX.
@@ -30,9 +34,17 @@ For a full content-management system based on MiniLatex, see
 [knode.io](https://knode.io)
 
 MiniLatex is written in [Elm](http://elm-lang.org/),
-a statically typed functional language. The code
+a statically typed functional language created by Evan Czaplicki.
+Elm is a language whose target use is the development of web apps.
+This fact, combined with the expressivity of its type system and the quality
+of its parser combinator library, [elm/parser](https://package.elm-lang.org/packages/elm/parser/latest/),
+make it an ideal vehicle for writing MiniLatex.
+
+The code for MiniLatex
 is available both on [GitHub](https://github.com/jxxcarlson/meenylatex)
 and at [package.elm-lang.org](https://package.elm-lang.org/packages/jxxcarlson/meenylatex/latest/)
+
+yada yada: [Overview](overview.md#elaborating)
 
 ## Acknowledgements
 
