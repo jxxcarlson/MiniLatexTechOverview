@@ -15,7 +15,9 @@ tree from which the source text can be derived, but which
 in addition reflects an understanding of the grammar
 of MiniLatex. Source text is transformed to an AST by
 applying a _parser_. The second arrow is the _renderer_.
-It transforms the AST to HTML, some equivalent structure.
+It transforms the AST to HTML, or some equivalent structure
+such as `Html msg`, Elm's native data type for producing
+HTML.
 
 The type of the AST is defined as follows:
 
@@ -38,10 +40,17 @@ and it is, in abbreviated form, the
 first paragraph of code that I wrote
 in developing the system.
 
-In this overview we give some examples of how short bit of
-source text are parsed and rendered, then discuss the overall
-design of the renderer. In the next section we discuss the
-design of the parser.
+In this overview we first give some examples of how short bits of
+source text are parsed, then discuss the overall
+design of the renderer. As noted above, the
+`Source => AST => HTML` pipeline is a simplified
+version of what is actually done. We therefore outline
+the additional steps which make up the pipeline used
+in production. Some of these steps have to do with
+implementing features such as section numbers and
+cross-references. Others have to do with perfomrance,
+that is, with speed. The succeeding sections add detail
+to what is outlined below.
 
 ## Parsing: Examples
 
@@ -143,58 +152,64 @@ render latexState latexExpression =
 
 As mentioned, the short pipeline `Source => AST => Html` is
 rough description of the parse-render pipeline. There is in
-fact quite a bit more to it.
+fact quite a bit more to it. In outline, here is the process
 
-### Chunking
+```
+Source text => List of paragraphs                           -- Paragraph.paragraphify
+            => (LatexState, List (List LatexExpression))    -- Accumulator.parse
+            => ( LatexState, List (Html msg))               -- Accumulator.render
+            =>  Html msg                                    -- |> Html.div []
+            => DOM                                          -- Elm runtime
+            => DOM                                          -- MathJax
+```
 
-The first step is to
-chunk the source text into a list of "logical paragraphs."
-These are either normal paragraphs or an outer begin-end
+### Chunkng
+
+Chunk source text into a list of logical paragraphs:
+`String -> List String`. Logical paragraphs are either
+normal paragraphs or an outer begin-end
 pair for an environment. Chunking is carried out by
 a finite state machine that only looks at the beginnings
 of lines. It is designed to be much faster than parsing,
 which must look at each character.
 
-### Applying accumulators
+### `Accumulate.parse`
 
-In the next step, an empty `LatexState` is
-created. A value of this type holds information on counters
-for sections, cross-references, etc. To compute these, we
-use a function with the signature
+This step is an elarboration of parsing. Parsing
+a string produces a `List LatexExpression`,
+and mapping the parser onto a list of strings
+produces a `List (List LatexExpression)`.
+The function `Accumulator.parse` takes as
+arguments a `LatexState` and a `List String`,
+producing a pair consisiting of an updated
+`LatexState` and the `List (List LatexExpression)`
+just described. A value of type `LatexState` holds
+counters for section and subsection numbers,
+information for cross-references, etc. If one
+applies `Accumulator.parse` to an empty `LatexState`
+and a list of strings, the final `LatexState` carries
+the information needed to render sections with
+sequential numbers, resolve cross-refernces, etc.
+
+```
+Accumlator.parse :
+    LatexState
+    -> List String
+    -> ( LatexState, List (List LatexExpression) )
+```
+
+The general pattern is
 
 ```
 type alias Accumulator : state -> List a -> (state, List b)
 ```
 
-Thus an **Accumulator** takes a `state` and a list of `a`'s and
-returns a list of `b`'s as well as a new `state`. We employ
-two accumulators. The first one looks like this:
+An accumulator takes a `state` and a list of `a`'s and
+returns an updated `state` and a list of `b`'s.
 
-```
-Accumulator.parse :
-    LatexState
-    -> List String
-    -> ( LatexState, List (List LatexExpression) )
-Accumulator.parse latexState paragraphs =
-    paragraphs
-        |> List.foldl parseReducer ( latexState, [] )
-```
+### Accumulator.render
 
-Parsing a paragraph generates a list of `LatexExpressions`,
-so applying `Accumulator.parse` produces a list of lists of `LatexExpressions`, together with a `LatexState` that holds all the information needed to give sequentially
-numbered sections, resolve cross-references,
-
-A second accumulator takes the information given and applies
-a renderer to each `List LatexExpression` to produce
-a new pair `( LatexState, List a )`. If the renderer
-has type `LatexState -> List LatexExpression -> a`, then
-the list produces is a `List String`. This is the case
-of rendering to standard HTML text. If the renderer
-has type `LatexState -> List LatexExpression -> Html msg`, then
-the list produces is a `List (Html msg)`. This is the case
-of rendering to Elm's natural type representing HTML.
-
-Here is the definition:
+Consider a function of the type:
 
 ```
 Accumulator.render :
@@ -202,10 +217,20 @@ Accumulator.render :
     -> LatexState
     -> List (List LatexExpression)
     -> ( LatexState, List a )
-Accumulator.render renderer latexState paragraphs =
-    paragraphs
-        |> List.foldl (renderReducer renderer) ( latexState, [] )
 ```
+
+The first argument, takes`LatexSate` and a list of
+`LatexExpressions` as arguments and returns a value
+of type `a`. It is a rendering function that renders
+to type `a`. Given such a rendering function, we obtain
+an accumulator which transforms a `List (List LatexExpression)`
+to a `List a`:
+
+```
+LatexState -> List (List LatexExpression) -> ( LatexState, List a )
+```
+
+In the outline above, `a = Html msg`.
 
 ### Spacifying
 
