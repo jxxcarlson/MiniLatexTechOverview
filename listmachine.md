@@ -63,6 +63,65 @@ Then do this:
 [1,3,6,9,7] : List Int
 ```
 
+## addSpace
+
+The `Render2.addSpace` function is the output function for
+a `ListMachine` with type `State LatexExpression`. Thus
+it transforms a tape of `LatexExpressions` into another
+tape of the same kind. The output function given below
+defines the rules for adding space before or after
+a `LXString String`, or not adding any space at all:
+
+```
+addSpace : ListMachine.State LatexExpression -> LatexExpression
+addSpace internalState =
+    let
+        a =
+            internalState.before |> Maybe.withDefault (LXString "")
+
+        b =
+            internalState.current |> Maybe.withDefault (LXString "")
+
+        c =
+            internalState.after |> Maybe.withDefault (LXString "")
+    in
+    case ( a, b, c ) of
+        ( Macro _ _ _, LXString str, _ ) ->
+            if List.member (firstChar str) [ ".", ",", "?", "!", ";", ":" ] then
+                LXString str
+
+            else
+                LXString (" " ++ str)
+
+        ( InlineMath _, LXString str, _ ) ->
+            if List.member (firstChar str) [ "-", ".", ",", "?", "!", ";", ":" ] then
+                LXString str
+
+            else
+                LXString (" " ++ str)
+
+        ( _, LXString str, _ ) ->
+            if List.member (lastChar str) [ ")", ".", ",", "?", "!", ";", ":" ] then
+                LXString (str ++ " ")
+
+            else
+                LXString str
+
+        ( _, _, _ ) ->
+            b
+```
+
+Here are the two small auxilliary functions:
+
+```
+lastChar =
+    String.right 1
+
+
+firstChar =
+    String.left 1
+```
+
 ## The internals of runMachine
 
 To begin, define and augmented state which
