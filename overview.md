@@ -154,7 +154,7 @@ As mentioned, the short pipeline `Source => AST => Html` is
 rough description of the parse-render pipeline. There is in
 fact quite a bit more to it. In outline, here is the process
 
-```
+```elm
 Source text => List of paragraphs                           -- Paragraph.paragraphify
             => (LatexState, List (List LatexExpression))    -- Accumulator.parse
             => ( LatexState, List (Html msg))               -- Accumulator.render
@@ -191,7 +191,7 @@ and a list of strings, the final `LatexState` carries
 the information needed to render sections with
 sequential numbers, resolve cross-refernces, etc.
 
-```
+```elm
 Accumlator.parse :
     LatexState
     -> List String
@@ -200,7 +200,7 @@ Accumlator.parse :
 
 The general pattern is
 
-```
+```elm
 type alias Accumulator : state -> List a -> (state, List b)
 ```
 
@@ -211,7 +211,7 @@ returns an updated `state` and a list of `b`'s.
 
 Consider a function of the type:
 
-```
+```elm
 Accumulator.render :
    (LatexState -> List LatexExpression -> a)
     -> LatexState
@@ -226,7 +226,7 @@ to type `a`. Given such a rendering function, we obtain
 an accumulator which transforms a `List (List LatexExpression)`
 to a `List a`:
 
-```
+```elm
 LatexState -> List (List LatexExpression) -> ( LatexState, List a )
 ```
 
@@ -245,7 +245,7 @@ where needed. Then, in the end, rendered elements can
 be joined end-to-end. Here is how we render a list
 of `LatexExpressions`:
 
-```
+```elm
 renderLatexList : LatexState -> List LatexExpression -> Html msg
 renderLatexList latexState latexList =
     latexList
@@ -261,7 +261,7 @@ A List Machine reads a tape, just as does a Turing machine,
 but it only has access to the current square on the tape,
 the one before it, and the one after it.
 
-```
+```elm
 spacify : List LatexExpression -> List LatexExpression
 spacify latexList =
     latexList
