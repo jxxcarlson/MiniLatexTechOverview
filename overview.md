@@ -11,11 +11,12 @@ tree from which the source text can be rederived, but which
 in addition reflects an understanding of the grammar
 of MiniLatex. Because of this latter fact, many other
 transformations are possible, e.g., transformation to
-HTML.Source text is transformed to an AST by
-applying a _parser_. The second arrow, from AST to HTML,
-is the _renderer_.
+HTML.
 
-The type of the AST is defined as follows:
+To obtain an AST from the source text, one
+applies a _parser_. The obtain HTML from
+the AST, one applies another function, a
+_renderer_. The type of the AST is defined as follows:
 
 ```elm
 type LatexExpression
@@ -44,11 +45,15 @@ version of what is actually done. We therefore outline
 the additional steps which make up the pipeline used
 in production. Some of these steps have to do with
 implementing features such as section numbers and
-cross-references. Others have to do with perfomrance,
-that is, with speed. The succeeding sections add detail
-to what is outlined below.
+cross-references. Others have to do with performance,
+that is, with speed. In the succeeding sections, e.g.,
+[Parser](parser.md), [Accumulator](accumulator.md),
+[Differ](differ.md), we add detail
+to what is outlined below, and we discuss other issues,
+such as the [Specification](specification.md) and
+[Grammar](grammar.md) of MiniLatex.
 
-## Parsing: Examples
+## Parsing
 
 Below are some examples of how source text is parsed and rendered.
 The parsing examples were computed as in the following:
@@ -62,7 +67,7 @@ The parsing examples were computed as in the following:
     : Result (List Parser.DeadEnd) LatexExpression
 ```
 
-The value `LXString ("Hello, Alonzo")` is rendered to
+The value `LXString ("Hello, Alonzo")` is rendered as
 the string `"<span>Hello, Alonzo!</span>"`.
 
 1.
@@ -106,12 +111,12 @@ renderer is not at all difficult.
 
 MiniLatex has three renderers. One yields HTML, that is,
 a string. Another yields `Html msg`, the native type for
-HTML in Elm, the language in which MiniLatex is written.
+HTML in Elm.
 There is also a renderer that produces standard LaTeX.
 
 The render-to-latex function is used to export MiniLatex
 documents. It is also useful for checking
-correctness. Let `f` denote the operation "parse,
+correctness. Let `f : String -> String` denote the operation "parse,
 then render to Latex." If `f` operates correctly,
 then the idempotency
 relation `f o f = f` holds. In that case,
@@ -161,10 +166,12 @@ render latexState latexExpression =
                     Html.span [] [ Html.text str ]
 
         LXError error ->
-            Html.p [ HA.style "color" "red" ] [ Html.text <| String.join "\n---\n\n" (List.map errorReport error) ]
+            Html.p
+              [ HA.style "color" "red" ]
+              [ Html.text <| String.join "\n---\n\n" (List.map errorReport error) ]
 ```
 
-## <a name="elaborating"> Elaborating the pipeline
+## Elaborating the pipeline
 
 As mentioned, the short pipeline `Source => AST => Html` is a
 rough description of the parse-render pipeline. There is in
@@ -172,17 +179,18 @@ fact quite a bit more to it. In outline, here is the process:
 
 ```elm
 Source text
-   => List of paragraphs                           -- Paragraph.paragraphify
-   => (LatexState, List (List LatexExpression))    -- Accumulator.parse
-   => ( LatexState, List (Html msg))               -- Accumulator.render
-   =>  Html msg                                    -- |> Html.div []
-   => DOM                                          -- Elm runtime
-   => DOM                                          -- MathJax
+   => List of paragraphs                           -- (1) Paragraph.paragraphify
+   => (LatexState, List (List LatexExpression))    -- (2) Accumulator.parse
+   => ( LatexState, List (Html msg))               -- (3) Accumulator.render
+   =>  Html msg                                    -- (4) Concatenate
+   => DOM                                          -- (5) Elm runtime
+   => DOM                                          -- (6) MathJax
 ```
 
-### Chunking
+### (1) Paragraphify
 
-Chunk source text into a list of logical paragraphs:
+The function `Paragraph.paragraphify` "chunks"
+source text into a list of logical paragraphs:
 `String -> List String`. Logical paragraphs are either
 normal paragraphs or an outer begin-end
 pair of an environment. Chunking is carried out by
@@ -190,7 +198,7 @@ a finite state machine that only looks at the beginnings
 of lines. It is designed to be much faster than parsing,
 which must look at each character.
 
-### `Accumulate.parse`
+### (2) `Accumulate.parse`
 
 This step is an elarboration of parsing. Parsing
 a string produces a `List LatexExpression`,
@@ -224,7 +232,7 @@ type alias Accumulator : state -> List a -> (state, List b)
 An accumulator takes a `state` and a list of `a`'s and
 returns an updated `state` and a list of `b`'s.
 
-### Accumulator.render
+### (3) Accumulator.render
 
 Consider a function of the type:
 
@@ -249,7 +257,24 @@ LatexState -> List (List LatexExpression) -> ( LatexState, List a )
 
 In the outline above, `a = Html msg`.
 
-### Spacifying
+### (4) Concatenate
+
+This is a simple step. A value `list` of type `List (Html msg`) must
+be converted to a type of `Html msg` by converting each element
+of a list into the `Html msg` representation of an HTML paragraph,
+and then converting this list of paragraphs into the `Html msg`
+represantion of a single HTML div.
+
+### (5) Elm Runtime
+
+The Elm Runtime converts the `Html msg` value into node
+in the DOM of the brower.
+
+### (6) MathJax
+
+MathJax renders the DOM nodes that carry mathematical text.
+
+## Spacifying
 
 There is subtlety to rendering a `LatexList`. The parsing
 process creates a list of `LatexExpressions`. When these
@@ -288,9 +313,44 @@ spacify latexList =
 In this way, `renderLatexList` function produces elements that can be
 joined end-to-end.
 
-### MathJax
+## Difffing
 
-The appropriately spacifyied value `Html msg`,
-is sent directly to the DOM. If it contains math text,
-MathJax can operate on exposed element which produce an
-esthetically pleasing result.
+There is one additional elaboration of the above. The typical workflow
+of a user editing a MiniLatex document is to open it up, then begin
+adding/changing bits of text here and there. In a document management system
+like [knode.io](https://knode.io) which hosts MiniLatex, the document
+is automatically rendered every 250 milliseconds. For long documents,
+there could be a noticeable delay, which of course is quite annoying.
+To prevent this, we employ a very simple diffing strategy. It is far
+from optimal in theory, but it works quite well in practice because
+of the way human editors typically operate: by
+mostly making small, localized changes.
+
+Implementing this strategy has an upside and a downside. The upside
+is that changes are almost always rendered within the 250 millisecond
+window, providing a very good user experience -- "live editing and rendering."
+The downside is that without re-rendering the entire document, one cannot
+properly resolve cross-references, compute section numbers, etc.
+However, the user can command a full render whenever it is needed (control-F
+in [knode.io](https://knode.io)).
+
+The strategy is this. Let `u` and `v` be two lists
+of strings. Write them as `u = a x b`, `v = u y b`,
+where `a` is the greatest common prefix and `b` is the
+greatest common suffix. Supposed that we have in hand
+`u' = render u = a' x' b'`, where `a' = render a`, etc.
+Let `y' = render y`. Then `v' = diff u = a' y' b'`.
+
+To carry out this strategy, one introduces a new type alias,
+`DiffRecord`, which holds `a`, `x`, `b`, and `y`, and one
+defines a function
+
+```
+diff : List String -> List String -> DiffRecord
+```
+
+One also defines the notion of an `EditRecord` to
+compute `v = a' y' b'` in an efficient way from
+`u = a' x' b'` and the `DiffRecord`, that
+is, by computing only `y => y'`. See the [Differ](differ.md)
+sections for more details on both transformations.

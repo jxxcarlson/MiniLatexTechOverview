@@ -25,9 +25,12 @@ For a demonstration of this technology, see
 MiniLatex is written in [Elm](http://elm-lang.org/),
 a statically typed functional language created by Evan Czaplicki.
 Elm is a language whose target use is the development of web apps.
-This fact, combined with the expressivity of its type system and the quality
-of its parser combinator library,
-makes it an ideal vehicle for writing MiniLatex.
+Its type system gives unparalled assurance that code, once deployed,
+"just works," as well as the ability to refactor without fear and
+therefore to write and maintain code for the long term. These
+facts, combined with the expressivity of Elm's type system and the quality
+of its parser combinator library ([elm/parser](https://package.elm-lang.org/packages/elm/parser/latest/)), makes it an ideal vehicle
+for the MiniLatex project.
 
 **Plans.** MiniLatex is still a research project and knode.io is still
 in development. That said,
@@ -62,10 +65,10 @@ what make rendering so very fast.
 In starting this project, I had never
 used parser combinators before, so
 going from the definition of the type of the AST to
-a functioning parser was slow-going indeed.
-Ilias, whom I have never met, other than through
-the Elm Slack, knows these things cold,
-and was unstinting in his generous help.
+a functioning parser was at first quite a struggle.
+The generous help that I received rom Ilias, whom I have never met,
+other than through the Elm Slack, helped me to
+find my way in this unfamiliar terrain.
 
 As I made the transition from version
 0.18 to 0.19 of the Elm compiler, I encountered
