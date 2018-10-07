@@ -1,9 +1,9 @@
 # Accumulators
 
-As noted in the overview, one uses "Accumulators" to
+As noted in the overview, one uses an accumulator to
 collect information about sequentially numbered
 sections, cross-references, tables of content, etc.,
-then use it to render the source text with these features.
+then uses a second accumulator to render the source text with these features.
 Accumulators are made of up of reducers and folds:
 
 ```elm
@@ -11,7 +11,7 @@ type alias Reducer : a -> b -> b
 List.foldl : (a -> b -> b ) -> b -> List a -> b
 ```
 
-Thus a `Reducer` is just a name for the type of the
+A `Reducer` is a name for the type of the
 first argument of a fold. Consider a reducer of the
 form
 
@@ -32,15 +32,20 @@ acc transformer state_ inputList =
   List.foldl transformer (state_, []) inputList
 ```
 
-This function has type
+The type of this function is
 
 ```elm
-Accumulator a b = state -> List a (state, List b)
+Accumulator a b = State a b -> List a -> (State a b, List b)
 ```
+
+To restate in plainer English, an `Accumulator a b` takes
+as input a `State a b` and a `List a` and returns a tuple
+consisting of an updated `State a b` and another list, one
+of type `List b`.
 
 ## Accumulator.parse
 
-Let us now discuss the accumulators used in MiniLatex.
+Let us discuss the accumulators used in MiniLatex.
 The first of these is `Accumulator.parse`. Its function
 is to take a `LatexState` and a list of paragraphs, i.e.,
 a `List String`, and produce an updated `LatexState`
@@ -82,26 +87,55 @@ parseReducer inputString ( latexState, inputList ) =
 The `parseReducer` takes as input a string, representing a
 logical paragraph of source text, and a pair consisting of
 a `LatexState` and a `List (List LatexExpression`. It
-parses the string and computes a new `LatexState`. Finally,
-it returns a pair consisting of the new `LatexState` and
-inputList with the parsedInput appended.
+parses the string and computes a new `LatexState` using
+`latexStateReducer`:
 
 ```
 latexStateReducer : List LatexExpression -> LatexState -> LatexState
 ```
 
+We discuss this function later on.
+The return value of the `parseReducer` is
+a pair consisting of the new `LatexState` and
+inputList with the parsedInput appended.
+
 ## Accumulator.render
 
+`Accumulator.render renderer` is an accumulator
+which takes a `LatexState` and a `List (List LatexExpression)`
+as input, and produces a new `LatexState` and `List a`
+as output. The nature of `a` depends on the `renderer`
+function used:
+
 ```
-render :
+Accumulator.render :
     (LatexState -> List LatexExpression -> a)
     -> LatexState
     -> List (List LatexExpression)
     -> ( LatexState, List a )
-render renderer latexState paragraphs =
+Accumulator.render renderer latexState paragraphs =
     paragraphs
         |> List.foldl (renderReducer renderer) ( latexState, [] )
 ```
+
+The expression `renderReducer renderer` is a reducer of type
+
+```
+ List LatexExpression  -> ( LatexState, List a ) -> ( LatexState, List a )
+```
+
+It operates as follows:
+
+1. Compute a new `LatexState` by applying `latexStateReducer`
+   to (a) the given list of `LatexExpressions` and (b)
+   the `LatexState` coming from the first element of the
+   second argument, a tuple of type `(LatexState, List a)`
+
+2. Apply the `renderer` to the new state computed in the previous
+   step and the `List LatexExpression` given by the first argument.
+
+3. Return a tuple consisting of the updated `LatexState` and
+   the `inputList` with the newly rendered text appended.
 
 ```
 renderReducer :
@@ -109,15 +143,15 @@ renderReducer :
     -> List LatexExpression
     -> ( LatexState, List a )
     -> ( LatexState, List a )
-renderReducer renderer input ( state, outputList ) =
+renderReducer renderer listLatexExpression ( latexState, inputList ) =
     let
-        newState =
-            latexStateReducer input state
+        newLatexState =
+            latexStateReducer listLatexExpression latexState
 
         renderedInput =
-            renderer newState input
+            renderer newState listLatexExpression
     in
-    ( newState, outputList ++ [ renderedInput ] )
+    ( newLatexState, inputList ++ [ renderedInput ] )
 ```
 
 ## LatexStateReducer
