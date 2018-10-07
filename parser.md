@@ -5,7 +5,7 @@ Evan Czaplicki's [parser combinator package](https://package.elm-lang.org/packag
 We will take a look at some of the top level parsers, then examine in detail
 the parser for environments, which is both the most important and the most complex one.
 
-## Top level parsers
+## The top level parser
 
 Here is the top-level parsing function:
 
@@ -49,7 +49,7 @@ We will come back to this later when we discuss the MiniLatex grammar.
 There is no one-to-one correspondence between parser functions and productions,
 but there is a close relations.
 
-### Macro parser
+## Macro parser
 
 Let us look at one of the components of the `latexExpression` parser, say,
 the parsers for macros -- expressions like
