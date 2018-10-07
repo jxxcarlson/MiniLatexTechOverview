@@ -219,4 +219,4 @@ h o' (g o' f) = (h o' g) o' f
 ```
 
 This is the point of view of Kliesli categories, which I learned
-from the writings and videos of Bartosz Miliewski:
+from the writings and videos of Bartosz Milewski. (INSERT REFERENCE)
