@@ -1,12 +1,12 @@
 # Grammar
 
-MiniLatex has a context-sensitive grammar which will be described below.
-The text below was written one year ago. Much of it may be incorrect,
-so I need to review this and think about it.
+MiniLatex has a context-sensitive grammar which is be described below.
+The text below was written one year ago. It is incomplete, has
+errors, and needs to be rethought.
 
 ## Terminals
 
-- `spaces => sp*` where `sp`
+- `spaces => sp*` where `sp` is the space character.
 
 - `ws => { sp, nl }*`, where `nl` is the newline character
 
@@ -27,9 +27,7 @@ just the terminal and a description of it.
 
 - `Arg` -- arguments for macros
 
-- `BeginWord` -- Arg
-
-- `BeginWord` -- produce \begin{identifier}.. \end{identifier} phrase for LaTeX environments.
+- `BeginWord` -- produce `\begin{identifier}` phrase for LaTeX environments.
 
 - `Comment` -- LaTeX comments -- % foo, bar
 
@@ -105,7 +103,12 @@ Because of the use of constructions of the form
 ```
 
 the production of environments requires the use of a context-sensitive grammar. Here `envName`
-may take on arbitrarily many values, and, in particular, values not known at the time the parser is written. Note that the production (??) below has a nonterminal followed by a terminal on the right-hand side, while (4.6) has a nonterminal followed by a terminal on the left-hand side. The presence of a terminal on the left-hand side tells us that the grammar is context-sensitive.
+may take on arbitrarily many values, and, in particular, values not known at the time the parser is written. Note that the production (??) below has a nonterminal followed by a terminal on the right-hand side, while
+productions like `Env theorem`, `Env whatever` have nonterminal followed by a terminal on the left-hand side.
+The presence of a terminal on the left-hand side tells us that the grammar is context-sensitive.  
+Parsing environments also requires potentially unbounded look-ahead, so the grammar is _LL(infinity)_.
+In fact, in any real applation, it is _LL(N)_ where _N_ is the maximumn number of characters
+in a logical paragraph. The paragraph-based parsing strategy pays dividends here.
 
 `EnvName => Env identifier`
 

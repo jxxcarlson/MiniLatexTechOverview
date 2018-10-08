@@ -115,15 +115,16 @@ an updated `EditRecord`. Here are the steps:
 1. Apply `logicalParagraphify` to transform the input source text
    string into a list of logical paragraphs.
 
-2. Apply `diff` to the given `EditRecord` and the list of logical paragraphs
+2. Apply `diff` to the "old paragraphs" in the `EditRecord` and the
+   "new paragraphs" from (1)
    to produce a `DiffRecord`.
 
-3. Apply `differentialRender` to the `DiffRecord (2) and the list
-   of logical paragraphs (3) to produce to produce an updated list
+3. Apply `differentialRender` to the `DiffRecord` from step (2) and the list
+   of logical paragraphs frome step (1) to producn updated list
    of rendererd paragraphs.
 
-4. Apply `differentialIdList` to the random seet, the `DiffRecord`, and
-   the initial `EditRecord` to create a new list of paragraph `ids`.
+4. Apply `differentialIdList` to the random seed, the `DiffRecord`, and
+   "old" `idList` from the `EditRecord` to create a new list of paragraph `ids`.
 
 The final step is to used the information harvested in 1--4 to create
 a new `EditRecord`.

@@ -297,8 +297,7 @@ renderLatexList latexState latexList =
 ```
 
 Spacifying is carried out by
-a "List machine," as described in
-[this post on Medium](https://medium.com/me/stats/post/c07700bba13c).
+a "List machine."
 A List Machine reads a tape, just as does a Turing machine,
 but it only has access to the current square on the tape,
 the one before it, and the one after it.
@@ -307,11 +306,14 @@ the one before it, and the one after it.
 spacify : List LatexExpression -> List LatexExpression
 spacify latexList =
     latexList
-        |> ListMachine.runMachine addSpace
+        |> ListMachine.run addSpace
 ```
 
 In this way, `renderLatexList` function produces elements that can be
 joined end-to-end.
+
+For more on list machines, see
+[this section](listmachine.md)
 
 ## Difffing
 

@@ -1,10 +1,10 @@
 # Specification
 
-This is very much a work in progress. Below is a sketch.
+This section is incomplete and is very much a work in progress. Below is a sketch.
 
 ## What is supported
 
-1. Familiar macros like `\section`, `subsection`,
+1. Familiar macros like `\section`, `\subsection`,
    `\emph`, `\cite`, etc. See the list below.
 
 2. Familiar environments such as `theorem`,
@@ -18,11 +18,11 @@ This is very much a work in progress. Below is a sketch.
 There are some macros and environments which
 are unique to MiniLatex. When a MiniLatex
 document is exported, it is exported along
-with a file of macro definitions so that
+with a file of text-mode macro definitions so that
 the document can be rendered using
 `pdflatex`.
 
-## What is mot supported
+## What is not supported
 
 1. The elements `--` and `---` are not supported. Use
    `\ndash` and `\mdash` instead.
