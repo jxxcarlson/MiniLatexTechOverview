@@ -35,7 +35,7 @@ acc transformer state_ inputList =
 The type of this function is
 
 ```elm
-Accumulator a b = State a b -> List a -> (State a b, List b)
+Accumulator a b = State -> List a -> (State, List b)
 ```
 
 To restate in plainer English, an `Accumulator a b` takes
