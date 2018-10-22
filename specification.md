@@ -35,8 +35,99 @@ the document can be rendered using
 
 ## Supported Macros
 
-TODO
+### LaTeX
+
+Macros in this group of 24 exist in LaTeX
+and have the same meaning.
+
+```
+author
+date
+email
+cite
+emph
+eqref
+href
+index
+label
+maketitle
+revision
+section
+section*
+medskip
+ref
+smallskip
+subsection
+subsection*
+subsubsection
+subsubsection*
+subheading
+tableofcontents
+term
+title
+```
+
+### MiniLaTeX I
+
+Macros in this group of 19 are not in LaTeX,
+but their definitions are in the
+standard MiniLatex input file.
+
+```
+dollar
+percent
+code
+image
+imageref
+italic
+mdash
+ndash
+underscore
+backslash
+texarg
+setcounter
+innertableofcontents
+red
+blue
+highlight
+strike
+strong
+xlink
+```
+
+### MiniLatex II
+
+Macros in this group of 2 have no counterpart
+in basic LaTeX or in one of its packages.
+
+```
+ellie
+iframe
+```
 
 ## Supproted Environments
 
-TODO
+### LaTeX environments
+
+The 12 environments below are supported in MiniLatex
+
+```
+center
+comment
+enumerate
+eqnarray
+equation
+indent
+itemize
+quotation
+tabular
+thebibliography
+verbatim
+verse
+```
+
+### MiniLatex Environments
+
+```
+listing
+```

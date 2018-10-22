@@ -7,7 +7,7 @@ then uses a second accumulator to render the source text with these features.
 Accumulators are made of up of reducers and folds:
 
 ```elm
-type alias Reducer : a -> b -> b
+type alias Reducer a b : a -> b -> b
 List.foldl : (a -> b -> b ) -> b -> List a -> b
 ```
 
@@ -16,16 +16,16 @@ first argument of a fold. Consider a reducer of the
 form
 
 ```elm
-Reducer a b = a -> (state, List b) -> (state, List b)
+Reducer state a b  = a -> (state, List b) -> (state, List b)
 ```
 
 It fits into a fold of the form
 
 ```elm
-StateReducer a b -> (state, List b) -> List a -> (state, List b)
+Reducer state a b  -> (state, List b) -> List a -> (state, List b)
 ```
 
-Let `transform` have type `StateReducer a b`. Define
+Let `transform` have type `StateReducer state a b`. Define
 
 ```elm
 acc transformer state_ inputList =
@@ -35,10 +35,10 @@ acc transformer state_ inputList =
 The type of this function is
 
 ```elm
-Accumulator a b = State -> List a -> (State, List b)
+Accumulator state a b = state -> List a -> (state, List b)
 ```
 
-To restate in plainer English, an `Accumulator a b` takes
+To restate in plainer English, an `Accumulator state a b` takes
 as input a `State a b` and a `List a` and returns a tuple
 consisting of an updated `State a b` and another list, one
 of type `List b`.
